@@ -3,7 +3,7 @@ package journalctl
 import (
 	"encoding/json"
 	"io"
-    "net/http"
+	"net/http"
 )
 
 const (
@@ -24,8 +24,16 @@ func (c *Client) Entries() (entries []Entry, err error) {
 		return
 	}
 	dec := json.NewDecoder(resp.Body)
-	if err = dec.Decode(&entries); err != nil && err != io.EOF {
-		return
+
+	for {
+		var entry Entry
+		if err = dec.Decode(&entry); err == io.EOF {
+			err = nil
+			break
+		} else if err != nil {
+			return
+		}
+		entries = append(entries, entry)
 	}
 	return entries, nil
 
