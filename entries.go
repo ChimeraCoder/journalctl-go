@@ -12,8 +12,9 @@ const (
 )
 
 func (c *Client) Entries() (entries []Entry, err error) {
+	const endpoint = "/entries"
 	host := c.host()
-	req, err := http.NewRequest(_GET, host, nil)
+	req, err := http.NewRequest(_GET, host+"/entries", nil)
 	if err != nil {
 		return
 	}
