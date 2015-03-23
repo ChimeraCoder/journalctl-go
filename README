@@ -1,6 +1,6 @@
 journalctl-go
 ===================
-
+[![GoDoc](https://godoc.org/github.com/ChimeraCoder/journalctl-go?status.png)](https://godoc.org/github.com/ChimeraCoder/journalctl-go)
 
 A Go client interface for reading the systemd journal, using `systemd-journal-gatewayd`.
 
