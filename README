@@ -1,0 +1,10 @@
+journalctl-go
+===================
+
+
+A Go client interface for reading the systemd journal, using `systemd-journal-gatewayd`.
+
+
+
+##### Disclaimer
+This is currently an experimental package, and the API is subject to change.
