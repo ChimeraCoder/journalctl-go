@@ -1,8 +1,9 @@
 package journalctl
 
 import (
+	"bufio"
 	"encoding/json"
-	"io"
+	"log"
 	"net/http"
 )
 
@@ -24,17 +25,26 @@ func (c *Client) Entries() (entries []Entry, err error) {
 	if err != nil {
 		return
 	}
-	dec := json.NewDecoder(resp.Body)
 
-	for {
+	// Defaults to scanning lines
+	scanner := bufio.NewScanner(resp.Body)
+	for scanner.Scan() {
 		var entry Entry
-		if err = dec.Decode(&entry); err == io.EOF {
-			err = nil
-			break
-		} else if err != nil {
-			return
+		bts := scanner.Bytes()
+		if len(bts) == 0 {
+			continue
+		}
+		err = json.Unmarshal(bts, &entry)
+		if err != nil {
+			log.Printf("encountered error while unmarshalling: %s", string(bts))
+			return entries, err
 		}
 		entries = append(entries, entry)
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Printf("encountered error while scanning: %s", err)
+		return entries, err
 	}
 	return entries, nil
 

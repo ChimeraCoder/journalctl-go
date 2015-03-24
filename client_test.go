@@ -64,3 +64,30 @@ func Test_GetEntries(t *testing.T) {
 		t.Errorf("Expected and actual entries differ:\n%+v\n%+v", expected, entries)
 	}
 }
+
+func Test_GetEntriesList(t *testing.T) {
+	bts, err := ioutil.ReadFile("json/journalctl_entry_list.json")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, string(bts))
+	}))
+	defer ts.Close()
+	client := &Client{Host: ts.URL}
+	entries, err := client.Entries()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	if len(entries) != 2 {
+		t.Errorf("Expected 2 entries and found %d", len(entries))
+		return
+	}
+	for i, entry := range entries {
+		if reflect.DeepEqual(entry, Entry{}) {
+			t.Errorf("Received empty entry for entry %d", i)
+		}
+	}
+}
