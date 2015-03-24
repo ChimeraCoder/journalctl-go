@@ -12,21 +12,35 @@ import (
 func Test_GetEntries(t *testing.T) {
 
 	var expected = []Entry{
+		// currently any fields which systemd prepends with "_" or "__" will be hidden
 		Entry{
-			// currently any fields which systemd prepends with "_" or "__" will be hidden
-
-			//_CURSOR:                     "s=d8ba89471ff0454288d0589e3748af43;i=a;b=cb43988a622e43869c28d71431b0c3fc;m=254c539;t=511f5776c88b5;x=db9d099d8146ca84",
-			//_REALTIMETIMESTAMP:         "1427120851814581",
-			//_MONOTONICTIMESTAMP:        "39109945",
-			//_BOOTID:                    "cb43988a622e43869c28d71431b0c3fc",
-			PRIORITY: "6",
-			//_MACHINEID:                 "fe39ba83b9244251b1704fc655fbff2f",
-			//_HOSTNAME:                   "localhost.localdomain",
-			//_TRANSPORT:                  "kernel",
-			SYSLOGFACILITY:   "0",
-			SYSLOGIDENTIFIER: "kernel",
-			//_SOURCEMONOTONICTIMESTAMP: "36028765",
-			MESSAGE: "SELinux: the above unknown classes and permissions will be allowed",
+			CURSOR:                  "s=c60ae6415a0e4531a2064c8cdb11a0f4;i=587;b=d5f050252af342a2817795b375889f78;m=b11f9d6;t=5120f62678669;x=74d4678ad474a6b6",
+			REALTIMETIMESTAMP:       "1427232168314473",
+			MONOTONICTIMESTAMP:      "185727446",
+			BOOTID:                  "d5f050252af342a2817795b375889f78",
+			UID:                     "0",
+			MACHINEID:               "fe39ba83b9244251b1704fc655fbff2f",
+			PRIORITY:                "5",
+			CAPEFFECTIVE:            "3fffffffff",
+			TRANSPORT:               "syslog",
+			HOSTNAME:                "ip-172-30-0-229",
+			SYSLOGFACILITY:          "10",
+			GID:                     "1000",
+			SYSTEMDOWNERUID:         "1000",
+			SYSTEMDSLICE:            "user-1000.slice",
+			AUDITLOGINUID:           "1000",
+			SYSLOGIDENTIFIER:        "sudo",
+			COMM:                    "sudo",
+			EXE:                     "/usr/bin/sudo",
+			SELINUXCONTEXT:          "unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023",
+			AUDITSESSION:            "3",
+			SYSTEMDCGROUP:           "/user.slice/user-1000.slice/session-3.scope",
+			SYSTEMDSESSION:          "3",
+			SYSTEMDUNIT:             "session-3.scope",
+			MESSAGE:                 "fedora : TTY=pts/1 ; PWD=/home/fedora ; USER=root ; COMMAND=/bin/systemctl status systemd-journal-gatewayd",
+			PID:                     "1125",
+			CMDLINE:                 "sudo systemctl status systemd-journal-gatewayd",
+			SOURCEREALTIMETIMESTAMP: "1427232168313982",
 		},
 	}
 
