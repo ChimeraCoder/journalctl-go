@@ -3,7 +3,6 @@ package journalctl
 import (
 	"bufio"
 	"encoding/json"
-	"log"
 	"net/http"
 )
 
