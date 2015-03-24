@@ -36,16 +36,13 @@ func (c *Client) Entries() (entries []Entry, err error) {
 		}
 		err = json.Unmarshal(bts, &entry)
 		if err != nil {
-			log.Printf("encountered error while unmarshalling: %s", string(bts))
 			return entries, err
 		}
 		entries = append(entries, entry)
 	}
 
 	if err := scanner.Err(); err != nil {
-		log.Printf("encountered error while scanning: %s", err)
 		return entries, err
 	}
 	return entries, nil
-
 }
