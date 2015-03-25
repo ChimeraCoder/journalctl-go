@@ -55,7 +55,7 @@ func Test_GetEntries(t *testing.T) {
 	defer ts.Close()
 
 	client := &Client{Host: ts.URL}
-	entries, err := client.Entries()
+	entries, err := client.Entries(nil)
 	if err != nil {
 		t.Error(err)
 		return
@@ -76,7 +76,7 @@ func Test_GetEntriesList(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := &Client{Host: ts.URL}
-	entries, err := client.Entries()
+	entries, err := client.Entries(nil)
 	if err != nil {
 		t.Error(err)
 		return

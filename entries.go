@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"net/http"
+	"net/url"
 )
 
 const (
@@ -11,10 +12,24 @@ const (
 	_POST = "POST"
 )
 
-func (c *Client) Entries() (entries []Entry, err error) {
+// Entries will return a list of entries
+// If a non-nil filter is passed, any non-empty entries will be used
+// to filter the query
+// e.g. Entry{SYSTEMD_UNIT: "my-service.service"} will return only entries
+// matching this unit name
+// Note that the systemd journal does not allow filtering on all journal field names
+func (c *Client) Entries(filter *Entry) (entries []Entry, err error) {
+	values := url.Values{}
+	if filter != nil {
+		// TODO allow filtering of other fields
+		if unit := filter.SYSTEMDUNIT; unit != "" {
+			values.Set("_SYSTEMD_UNIT", unit)
+		}
+	}
+
 	const endpoint = "/entries"
 	host := c.host()
-	req, err := http.NewRequest(_GET, host+"/entries", nil)
+	req, err := http.NewRequest(_GET, host+"/entries?"+values.Encode(), nil)
 	if err != nil {
 		return
 	}
