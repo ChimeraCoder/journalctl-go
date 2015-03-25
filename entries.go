@@ -12,12 +12,12 @@ const (
 	_POST = "POST"
 )
 
-// Entries will return a list of entries
+// Entries will return a list of entries.
 // If a non-nil filter is passed, any non-empty entries will be used
-// to filter the query
-// e.g. Entry{SYSTEMD_UNIT: "my-service.service"} will return only entries
-// matching this unit name
-// Note that the systemd journal does not allow filtering on all journal field names
+// to filter the query.
+// For example, Entry{SYSTEMD_UNIT: "my-service.service"} will return only entries
+// matching this unit name.
+// Note that the systemd journal does not allow filtering on all journal field names.
 func (c *Client) Entries(filter *Entry) (entries []Entry, err error) {
 	values := url.Values{}
 	if filter != nil {
