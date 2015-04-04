@@ -3,6 +3,7 @@ package journalctl
 import (
 	"bufio"
 	"encoding/json"
+	"log"
 	"net/http"
 	"net/url"
 )
@@ -18,7 +19,9 @@ const (
 // For example, Entry{SYSTEMD_UNIT: "my-service.service"} will return only entries
 // matching this unit name.
 // Note that the systemd journal does not allow filtering on all journal field names.
-func (c *Client) Entries(filter *Entry) (entries []Entry, err error) {
+func (c *Client) Entries(filter *Entry) (entries chan Entry, err error) {
+	entries = make(chan Entry)
+
 	values := url.Values{}
 	if filter != nil {
 		// TODO allow filtering of other fields
@@ -40,23 +43,32 @@ func (c *Client) Entries(filter *Entry) (entries []Entry, err error) {
 		return
 	}
 
-	// Defaults to scanning lines
-	scanner := bufio.NewScanner(resp.Body)
-	for scanner.Scan() {
-		var entry Entry
-		bts := scanner.Bytes()
-		if len(bts) == 0 {
-			continue
+	go func() error {
+		// Defaults to scanning lines
+		scanner := bufio.NewScanner(resp.Body)
+		for scanner.Scan() {
+			var entry Entry
+			bts := scanner.Bytes()
+			if len(bts) == 0 {
+				continue
+			}
+			err = json.Unmarshal(bts, &entry)
+			if err != nil {
+				log.Print(err)
+                close(entries)
+				return err
+			}
+			entries <- entry
 		}
-		err = json.Unmarshal(bts, &entry)
-		if err != nil {
-			return entries, err
-		}
-		entries = append(entries, entry)
-	}
 
-	if err := scanner.Err(); err != nil {
-		return entries, err
-	}
+		if err := scanner.Err(); err != nil {
+			log.Print(err)
+                close(entries)
+			return err
+		}
+                close(entries)
+        return nil
+	}()
+
 	return entries, nil
 }

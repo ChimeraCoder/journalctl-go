@@ -55,11 +55,19 @@ func Test_GetEntries(t *testing.T) {
 	defer ts.Close()
 
 	client := &Client{Host: ts.URL}
-	entries, err := client.Entries(nil)
+	entries_ch, err := client.Entries(nil)
 	if err != nil {
 		t.Error(err)
 		return
 	}
+
+    var entries []Entry
+    for entry := range entries_ch{
+        entries = append(entries, entry)
+    }
+
+
+
 	if !reflect.DeepEqual(expected, entries) {
 		t.Errorf("Expected and actual entries differ:\n%+v\n%+v", expected, entries)
 	}
@@ -76,18 +84,27 @@ func Test_GetEntriesList(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := &Client{Host: ts.URL}
-	entries, err := client.Entries(nil)
+	entries_ch, err := client.Entries(nil)
 	if err != nil {
 		t.Error(err)
 		return
-	}
+    }
+	
+
+    var entries []Entry
+    for entry := range entries_ch{
+        entries = append(entries, entry)
+    }
 	if len(entries) != 2 {
 		t.Errorf("Expected 2 entries and found %d", len(entries))
 		return
 	}
-	for i, entry := range entries {
+    
+    var i int
+	for entry := range entries {
 		if reflect.DeepEqual(entry, Entry{}) {
 			t.Errorf("Received empty entry for entry %d", i)
 		}
+        i++
 	}
 }
