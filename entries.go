@@ -32,6 +32,7 @@ func (c *Client) Entries(filter *Entry) (entries chan Entry, err error) {
 
 	const endpoint = "/entries"
 	host := c.host()
+
 	req, err := http.NewRequest(_GET, host+"/entries?"+values.Encode(), nil)
 	if err != nil {
 		return
@@ -44,7 +45,6 @@ func (c *Client) Entries(filter *Entry) (entries chan Entry, err error) {
 	}
 
 	go func() error {
-		// Defaults to scanning lines
 		scanner := bufio.NewScanner(resp.Body)
 		for scanner.Scan() {
 			var entry Entry
@@ -55,7 +55,7 @@ func (c *Client) Entries(filter *Entry) (entries chan Entry, err error) {
 			err = json.Unmarshal(bts, &entry)
 			if err != nil {
 				log.Print(err)
-                close(entries)
+				close(entries)
 				return err
 			}
 			entries <- entry
@@ -63,11 +63,11 @@ func (c *Client) Entries(filter *Entry) (entries chan Entry, err error) {
 
 		if err := scanner.Err(); err != nil {
 			log.Print(err)
-                close(entries)
+			close(entries)
 			return err
 		}
-                close(entries)
-        return nil
+		close(entries)
+		return nil
 	}()
 
 	return entries, nil

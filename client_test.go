@@ -61,12 +61,10 @@ func Test_GetEntries(t *testing.T) {
 		return
 	}
 
-    var entries []Entry
-    for entry := range entries_ch{
-        entries = append(entries, entry)
-    }
-
-
+	var entries []Entry
+	for entry := range entries_ch {
+		entries = append(entries, entry)
+	}
 
 	if !reflect.DeepEqual(expected, entries) {
 		t.Errorf("Expected and actual entries differ:\n%+v\n%+v", expected, entries)
@@ -88,23 +86,22 @@ func Test_GetEntriesList(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 		return
-    }
-	
+	}
 
-    var entries []Entry
-    for entry := range entries_ch{
-        entries = append(entries, entry)
-    }
+	var entries []Entry
+	for entry := range entries_ch {
+		entries = append(entries, entry)
+	}
 	if len(entries) != 2 {
 		t.Errorf("Expected 2 entries and found %d", len(entries))
 		return
 	}
-    
-    var i int
+
+	var i int
 	for entry := range entries {
 		if reflect.DeepEqual(entry, Entry{}) {
 			t.Errorf("Received empty entry for entry %d", i)
 		}
-        i++
+		i++
 	}
 }
